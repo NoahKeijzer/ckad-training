@@ -5,4 +5,6 @@ description = "Add your description here"
 readme = "README.md"
 dependencies = [
     "fastapi>=0.120.1",
+    "psycopg2>=2.9.11",
+    "uvicorn[standard]>=0.23.0"
 ]
