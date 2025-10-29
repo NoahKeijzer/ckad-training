@@ -7,7 +7,7 @@ COPY . /app
 
 # Install system dependencies for building packages like psycopg2
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends build-essential libpq-dev \
+    && apt-get install -y --no-install-recommends build-essential libpq-dev postgresql-client \
     && python -m pip install --upgrade pip setuptools wheel \
     && pip install --no-cache-dir .[dev] \
     && apt-get purge -y --auto-remove build-essential \
