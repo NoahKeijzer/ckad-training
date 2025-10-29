@@ -1,24 +1,26 @@
+---
 apiVersion: apps/v1
-kind: Deployment
-metadata: 
-  name: postgres-deployment
-  labels: 
-    db: postgres-deployment
+kind: StatefulSet
+metadata:
+  name: postgres-statefulset
+  labels:
+    db: postgres-statefulset
 spec:
+  serviceName: postgres-service
   replicas: 1
   selector:
     matchLabels:
-      db: postgress-db
+      db: postgres-db 
   template:
     metadata:
       labels:
-        db: postgress-db
+        db: postgres-db
     spec:
       containers:
-        - name: postgress-db
+        - name: postgres-db
           image: postgres:14.19-alpine3.21
           ports:
-          - containerPort: 5432
+            - containerPort: 5432
           env:
             - name: POSTGRES_USER
               value: user
@@ -26,6 +28,8 @@ spec:
               value: password
             - name: POSTGRES_DB
               value: trainingdb
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
           resources:
             requests:
               memory: "256Mi"
@@ -36,9 +40,12 @@ spec:
           volumeMounts:
             - name: postgres-storage
               mountPath: /var/lib/postgresql/data
-      volumes:
-        - name: postgres-storage
-          emptyDir: {}
-
-
-    
+  
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-storage
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 250Mi
